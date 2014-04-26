@@ -585,7 +585,13 @@ void DataManager::SetDefaultValues()
 	mConstValues.insert(make_pair("true", "1"));
 	mConstValues.insert(make_pair("false", "0"));
 
-	mConstValues.insert(make_pair(TW_VERSION_VAR, TW_VERSION_STR));
+	if (Foundf2fsInitialized)
+	{
+		if (Foundf2fs)
+			mConstValues.insert(make_pair(TW_VERSION_VAR, TW_VERSION_STR_F2FS));
+		else
+			mConstValues.insert(make_pair(TW_VERSION_VAR, TW_VERSION_STR_EXT4));
+	}
 	mValues.insert(make_pair("tw_storage_path", make_pair("/", 1)));
 	mValues.insert(make_pair("tw_button_vibrate", make_pair("80", 1)));
 	mValues.insert(make_pair("tw_keyboard_vibrate", make_pair("40", 1)));
@@ -1086,7 +1092,11 @@ void DataManager::Output_Version(void)
 		LOGERR("Unable to open '%s'.\n", Path.c_str());
 		return;
 	}
-	strcpy(version, TW_VERSION_STR);
+	if (Foundf2fs)
+		strcpy(version, TW_VERSION_STR_F2FS);
+	else
+		strcpy(version, TW_VERSION_STR_EXT4);
+
 	fwrite(version, sizeof(version[0]), strlen(version) / sizeof(version[0]), fp);
 	fclose(fp);
 	TWFunc::copy_file("/etc/recovery.fstab", "/cache/recovery/recovery.fstab", 0644);

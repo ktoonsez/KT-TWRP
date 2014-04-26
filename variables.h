@@ -17,7 +17,8 @@
 #ifndef _VARIABLES_HEADER_
 #define _VARIABLES_HEADER_
 
-#define TW_VERSION_STR              "2.7.0.1.F2FS"
+#define TW_VERSION_STR_EXT4              "2.7.0.1.EXT4"
+#define TW_VERSION_STR_F2FS              "2.7.0.1.F2FS"
 
 #define TW_USE_COMPRESSION_VAR      "tw_use_compression"
 #define TW_FILENAME                 "tw_filename"
@@ -180,5 +181,8 @@
 #define SCRIPT_FILE_CACHE "/cache/recovery/openrecoveryscript"
 #define SCRIPT_FILE_TMP "/tmp/openrecoveryscript"
 #define TMP_LOG_FILE "/tmp/recovery.log"
+
+extern bool Foundf2fs;
+extern bool Foundf2fsInitialized;
 
 #endif  // _VARIABLES_HEADER_

@@ -51,6 +51,9 @@ extern "C" {
 struct selabel_handle *selinux_handle;
 #endif
 
+bool Foundf2fs = false;
+bool Foundf2fsInitialized = false;
+
 TWPartitionManager PartitionManager;
 int Log_Offset;
 twrpDU du;
@@ -79,13 +82,8 @@ int main(int argc, char **argv) {
 	}
 
 	time_t StartupTime = time(NULL);
-	printf("Starting TWRP %s on %s", TW_VERSION_STR, ctime(&StartupTime));
 
 	// Load default values to set DataManager constants and handle ifdefs
-	DataManager::SetDefaultValues();
-	printf("Starting the UI...");
-	gui_init();
-	printf("=> Linking mtab\n");
 	symlink("/proc/mounts", "/etc/mtab");
 	if (TWFunc::Path_Exists("/etc/twrp.fstab")) {
 		if (TWFunc::Path_Exists("/etc/recovery.fstab")) {
@@ -100,7 +98,20 @@ int main(int argc, char **argv) {
 		LOGERR("Failing out of recovery due to problem with recovery.fstab.\n");
 		return -1;
 	}
+
 	PartitionManager.Output_Partition_Logging();
+	Foundf2fsInitialized = true;
+	
+	if (Foundf2fs)
+		printf("Starting TWRP %s on %s", TW_VERSION_STR_F2FS, ctime(&StartupTime));
+	else
+		printf("Starting TWRP %s on %s", TW_VERSION_STR_EXT4, ctime(&StartupTime));
+
+	DataManager::SetDefaultValues();
+	printf("Starting the UI...");
+	printf("=> Linking mtab\n");
+	gui_init();
+
 	// Load up all the resources
 	gui_loadResources();
 

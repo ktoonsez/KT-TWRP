@@ -266,6 +266,12 @@ void TWPartitionManager::Output_Partition(TWPartition* Part) {
 	printf("   Backup_Method: %s\n\n", back_meth.c_str());
 	if (Part->Mount_Flags || !Part->Mount_Options.empty())
 		printf("   Mount_Flags=0x%8x, Mount_Options=%s\n", Part->Mount_Flags, Part->Mount_Options.c_str());
+	
+	if (!Part->Fstab_File_System.empty())
+	{
+		if (strncmp(Part->Fstab_File_System.c_str(), "f2fs", 4) == 0 && !Foundf2fs)
+			Foundf2fs = true;
+	}
 }
 
 int TWPartitionManager::Mount_By_Path(string Path, bool Display_Error) {
