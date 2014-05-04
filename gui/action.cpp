@@ -832,21 +832,33 @@ int GUIAction::doAction(Action action, int isThreaded /* = 0 */)
 					}
 				} else
 					ret_val = PartitionManager.Wipe_By_Path(arg);
-#ifdef TW_OEM_BUILD
-				if (arg == DataManager::GetSettingsStoragePath()) {
+//#ifdef TW_OEM_BUILD
+				/******* BIG monster hack to insure options get re-written after SD wipe *******/
+				if (arg == "DATAMEDIA") {
 					// If we wiped the settings storage path, recreate the TWRP folder and dump the settings
-					string Storage_Path = DataManager::GetSettingsStoragePath();
+					string Storage_Path = "/data/media/0";    //DataManager::GetSettingsStoragePath();
+					gui_print("Making TWRP folder and saving settings.  %s  -  %s\n", arg.c_str(), Storage_Path.c_str());
 
+					PartitionManager.UnMount_By_Path(Storage_Path, true);
+					PartitionManager.Wipe_Media_From_Data();
+					PartitionManager.UnMount_By_Path(Storage_Path, true);
+					//mkdir("/data", 0777);
+					//mkdir("/data/media", 0777);
 					if (PartitionManager.Mount_By_Path(Storage_Path, true)) {
+						mkdir("/data/media/0", 0770);
+						mkdir("/data/media/0/TWRP", 0775);
+						PartitionManager.UnMount_By_Path(Storage_Path, true);
+						PartitionManager.Mount_By_Path(Storage_Path, true);
+						gui_print("MOUNTED - Making TWRP folder and saving settings.  %s  -  %s\n", arg.c_str(), Storage_Path.c_str());
 						LOGINFO("Making TWRP folder and saving settings.\n");
 						Storage_Path += "/TWRP";
-						mkdir(Storage_Path.c_str(), 0777);
 						DataManager::Flush();
 					} else {
 						LOGERR("Unable to recreate TWRP folder and save settings.\n");
 					}
 				}
-#endif
+				
+//#endif
 			}
 			PartitionManager.Update_System_Details();
 			if (ret_val)

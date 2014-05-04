@@ -51,9 +51,6 @@ extern "C" {
 struct selabel_handle *selinux_handle;
 #endif
 
-bool Foundf2fs = false;
-bool Foundf2fsInitialized = false;
-
 TWPartitionManager PartitionManager;
 int Log_Offset;
 twrpDU du;
@@ -65,6 +62,8 @@ static void Print_Prop(const char *key, const char *name, void *cookie) {
 int main(int argc, char **argv) {
 	// Recovery needs to install world-readable files, so clear umask
 	// set by init
+	int forcef2fs;
+	int forcef2fs_sys;
 	umask(0);
 
 	Log_Offset = 0;
@@ -83,6 +82,11 @@ int main(int argc, char **argv) {
 
 	time_t StartupTime = time(NULL);
 
+	DataManager::SetDefaultValues();
+	printf("Starting the UI...");
+	printf("=> Linking mtab\n");
+	gui_init();
+
 	// Load default values to set DataManager constants and handle ifdefs
 	symlink("/proc/mounts", "/etc/mtab");
 	if (TWFunc::Path_Exists("/etc/twrp.fstab")) {
@@ -100,17 +104,8 @@ int main(int argc, char **argv) {
 	}
 
 	PartitionManager.Output_Partition_Logging();
-	Foundf2fsInitialized = true;
-	
-	if (Foundf2fs)
-		printf("Starting TWRP %s on %s", TW_VERSION_STR_F2FS, ctime(&StartupTime));
-	else
-		printf("Starting TWRP %s on %s", TW_VERSION_STR_EXT4, ctime(&StartupTime));
 
-	DataManager::SetDefaultValues();
-	printf("Starting the UI...");
-	printf("=> Linking mtab\n");
-	gui_init();
+	printf("Starting TWRP %s on %s", TW_VERSION_STR, ctime(&StartupTime));
 
 	// Load up all the resources
 	gui_loadResources();
@@ -275,6 +270,12 @@ int main(int argc, char **argv) {
 
 	// Read the settings file
 	DataManager::ReadSettingsFile();
+	DataManager::GetValue(TW_FORCE_F2FS, forcef2fs);
+	DataManager::GetValue(TW_FORCE_F2FS_SYSTEM, forcef2fs_sys);
+	if (forcef2fs && forcef2fs_sys)
+		gui_print("F2FS mode for data, cache and system is enabled!\n");
+	else if (forcef2fs && !forcef2fs_sys)
+		gui_print("F2FS mode for data and cache is enabled!\n");
 
 	// Fixup the RTC clock on devices which require it
 	TWFunc::Fixup_Time_On_Boot();

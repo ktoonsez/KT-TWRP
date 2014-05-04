@@ -1083,6 +1083,8 @@ bool TWPartition::UnMount(bool Display_Error) {
 bool TWPartition::Wipe(string New_File_System) {
 	bool wiped = false, update_crypt = false;
 	int check;
+	int forcef2fs;
+	int forcef2fs_sys;
 	string Layout_Filename = Mount_Point + "/.layout_version";
 
 	if (!Can_Be_Wiped) {
@@ -1100,6 +1102,33 @@ bool TWPartition::Wipe(string New_File_System) {
 	}
 #endif
 
+	DataManager::GetValue(TW_FORCE_F2FS, forcef2fs);
+	DataManager::GetValue(TW_FORCE_F2FS_SYSTEM, forcef2fs_sys);
+	if (forcef2fs)
+	{
+		if ((Mount_Point == "/system" && forcef2fs_sys) || Mount_Point == "/cache" || Mount_Point == "/data")
+		{
+			gui_print("Forcing f2fs wipe!\n");
+			LOGINFO("Forcing f2fs wipe on '%s'!\n", Display_Name.c_str());
+			New_File_System = "f2fs";
+		}
+		else if (Mount_Point == "/system" && !forcef2fs_sys)
+		{
+			gui_print("Forcing ext4 wipe!\n");
+			LOGINFO("Forcing ext4 wipe on '%s'!\n", Display_Name.c_str());
+			New_File_System = "ext4";
+		}
+	}
+	else
+	{
+		if (Mount_Point == "/system" || Mount_Point == "/cache" || Mount_Point == "/data")
+		{
+			gui_print("Forcing ext4 wipe!\n");
+			LOGINFO("Forcing ext4 wipe on '%s'!\n", Display_Name.c_str());
+			New_File_System = "ext4";
+		}
+	}
+		
 	if (Retain_Layout_Version && Mount(false) && TWFunc::Path_Exists(Layout_Filename))
 		TWFunc::copy_file(Layout_Filename, "/.layout_version", 0600);
 	else

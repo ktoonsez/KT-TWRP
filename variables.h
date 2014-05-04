@@ -17,8 +17,7 @@
 #ifndef _VARIABLES_HEADER_
 #define _VARIABLES_HEADER_
 
-#define TW_VERSION_STR_EXT4              "2.7.0.1.EXT4"
-#define TW_VERSION_STR_F2FS              "2.7.0.1.F2FS"
+#define TW_VERSION_STR              "2.7.0.5."
 
 #define TW_USE_COMPRESSION_VAR      "tw_use_compression"
 #define TW_FILENAME                 "tw_filename"
@@ -133,6 +132,8 @@
 #define TW_NO_BATTERY_PERCENT       "tw_no_battery_percent"
 #define TW_POWER_BUTTON             "tw_power_button"
 #define TW_SIMULATE_ACTIONS         "tw_simulate_actions"
+#define TW_FORCE_F2FS               "tw_force_f2fs"
+#define TW_FORCE_F2FS_SYSTEM        "tw_force_f2fs_system"
 #define TW_SIMULATE_FAIL            "tw_simulate_fail"
 #define TW_DONT_UNMOUNT_SYSTEM      "tw_dont_unmount_system"
 // #define TW_ALWAYS_RMRF              "tw_always_rmrf"

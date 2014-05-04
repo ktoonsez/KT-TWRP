@@ -670,26 +670,14 @@ std::string gui_parse_text(string inText)
 extern "C" int gui_init(void)
 {
 	int fd;
-
+	
 	gr_init();
 	
-	if (Foundf2fs)
+	if (res_create_surface("/res/images/curtain.f2fs.jpg", &gCurtain))
 	{
-		if (res_create_surface("/res/images/curtain.f2fs.jpg", &gCurtain))
-		{
-			printf
-			("Unable to locate '/res/images/curtain.f2fs.jpg'\nDid you set a DEVICE_RESOLUTION in your config files?\n");
-			return -1;
-		}
-	}
-	else
-	{
-		if (res_create_surface("/res/images/curtain.ext4.jpg", &gCurtain))
-		{
-			printf
-			("Unable to locate '/res/images/curtain.ext4.jpg'\nDid you set a DEVICE_RESOLUTION in your config files?\n");
-			return -1;
-		}
+		printf
+		("Unable to locate '/res/images/curtain.f2fs.jpg'\nDid you set a DEVICE_RESOLUTION in your config files?\n");
+		return -1;
 	}
 	
 	curtainSet();

@@ -585,13 +585,8 @@ void DataManager::SetDefaultValues()
 	mConstValues.insert(make_pair("true", "1"));
 	mConstValues.insert(make_pair("false", "0"));
 
-	if (Foundf2fsInitialized)
-	{
-		if (Foundf2fs)
-			mConstValues.insert(make_pair(TW_VERSION_VAR, TW_VERSION_STR_F2FS));
-		else
-			mConstValues.insert(make_pair(TW_VERSION_VAR, TW_VERSION_STR_EXT4));
-	}
+	mConstValues.insert(make_pair(TW_VERSION_VAR, TW_VERSION_STR));
+
 	mValues.insert(make_pair("tw_storage_path", make_pair("/", 1)));
 	mValues.insert(make_pair("tw_button_vibrate", make_pair("80", 1)));
 	mValues.insert(make_pair("tw_keyboard_vibrate", make_pair("40", 1)));
@@ -926,6 +921,8 @@ void DataManager::SetDefaultValues()
 	mValues.insert(make_pair(TW_ZIP_QUEUE_COUNT, make_pair("0", 0)));
 	mValues.insert(make_pair(TW_FILENAME, make_pair("/sdcard", 0)));
 	mValues.insert(make_pair(TW_SIMULATE_ACTIONS, make_pair("0", 1)));
+	mValues.insert(make_pair(TW_FORCE_F2FS, make_pair("0", 1)));
+	mValues.insert(make_pair(TW_FORCE_F2FS_SYSTEM, make_pair("0", 1)));
 	mValues.insert(make_pair(TW_SIMULATE_FAIL, make_pair("0", 1)));
 	mValues.insert(make_pair(TW_IS_ENCRYPTED, make_pair("0", 0)));
 	mValues.insert(make_pair(TW_IS_DECRYPTED, make_pair("0", 0)));
@@ -1092,10 +1089,7 @@ void DataManager::Output_Version(void)
 		LOGERR("Unable to open '%s'.\n", Path.c_str());
 		return;
 	}
-	if (Foundf2fs)
-		strcpy(version, TW_VERSION_STR_F2FS);
-	else
-		strcpy(version, TW_VERSION_STR_EXT4);
+	strcpy(version, TW_VERSION_STR);
 
 	fwrite(version, sizeof(version[0]), strlen(version) / sizeof(version[0]), fp);
 	fclose(fp);
