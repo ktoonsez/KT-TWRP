@@ -43,6 +43,7 @@
 
 	<variables>
 		<variable name="col1_x" value="260" />
+		<variable name="col1_x_indent" value="325" />
 		<variable name="col2_x" value="770" />
 		<variable name="col3_x" value="1310" />
 		<variable name="col4_x" value="1820" />
@@ -99,6 +100,7 @@
 		<variable name="nandcheck_row7" value="860" />
 		<variable name="button_text_color" value="#AAAAAA" />
 		<variable name="text_color" value="#A0A0A0" />
+		<variable name="text_color_red" value="#BB0000" />
 		<variable name="text_success_color" value="#33B5E5" />
 		<variable name="text_fail_color" value="#FF0101" />
 		<variable name="highlight_color" value="#90909080" />
@@ -223,9 +225,30 @@
 			</object>
 
 			<object type="text" color="%text_color%">
+				<condition var1="tw_force_f2fs" var2="0" />
 				<font resource="font" />
 				<placement x="400" y="8" />
-				<text>Team Win Recovery Project  v%tw_version%</text>
+				<text>Team Win Recovery Project  v%tw_version%EXT4</text>
+			</object>
+
+			<object type="text" color="%text_color_red%">
+				<conditions>
+					<condition var1="tw_force_f2fs" var2="1" />
+					<condition var1="tw_force_f2fs_system" var2="0" />
+				</conditions>
+				<font resource="font" />
+				<placement x="400" y="8" />
+				<text>Team Win Recovery Project  v%tw_version%F2FS</text>
+			</object>
+
+			<object type="text" color="%text_color_red%">
+				<conditions>
+					<condition var1="tw_force_f2fs" var2="1" />
+					<condition var1="tw_force_f2fs_system" var2="1" />
+				</conditions>
+				<font resource="font" />
+				<placement x="400" y="8" />
+				<text>Team Win Recovery Project  v%tw_version%F2FS+S</text>
 			</object>
 
 			<object type="text" color="%text_color%">
@@ -2420,6 +2443,23 @@
 			<object type="checkbox">
 				<placement x="%col1_x%" y="%row7_text_y%" />
 				<font resource="font" color="%text_color%" />
+				<text>Force data and cache wipe functions to use F2FS.</text>
+				<data variable="tw_force_f2fs" />
+				<image checked="checkbox_true" unchecked="checkbox_false" />
+			</object>
+
+			<object type="checkbox">
+				<condition var1="tw_force_f2fs" var2="1" />
+				<placement x="%col1_x_indent%" y="%row8_text_y%" />
+				<font resource="font" color="%text_color%" />
+				<text>Include system partition.</text>
+				<data variable="tw_force_f2fs_system" />
+				<image checked="checkbox_true" unchecked="checkbox_false" />
+			</object>
+
+			<object type="checkbox">
+				<placement x="%col1_x%" y="%row9_text_y%" />
+				<font resource="font" color="%text_color%" />
 				<text>Simulate most actions for theme testing</text>
 				<data variable="tw_simulate_actions" />
 				<image checked="checkbox_true" unchecked="checkbox_false" />
@@ -2427,7 +2467,7 @@
 
 			<object type="checkbox">
 				<condition var1="tw_simulate_actions" var2="1" />
-				<placement x="%col1_x%" y="%row8_text_y%" />
+				<placement x="%col1_x%" y="%row10_text_y%" />
 				<font resource="font" color="%text_color%" />
 				<text>Simulate failure for actions</text>
 				<data variable="tw_simulate_fail" />
@@ -3933,3 +3973,4 @@
 		</page>
 	</pages>
 </recovery>
+
